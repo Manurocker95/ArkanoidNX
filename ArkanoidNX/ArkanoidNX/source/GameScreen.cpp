@@ -35,6 +35,7 @@ GameScreen::GameScreen(Settings * _settings) : Scene(_settings)
 	this->m_paddleDisplacement = _settings->m_paddleDisplacement; 
 	this->m_dx = 6;
 	this->m_dy = 5;
+	this->m_blocksDestroyed = 0;
 	srand(time(NULL));
 	
 }
@@ -64,6 +65,8 @@ GameScreen::~GameScreen()
 		block->End(this->m_helper);
 		delete(block);
 	}
+	m_blocks.clear();
+
 }
 
 void GameScreen::Start(SDL_Helper * helper)
@@ -72,7 +75,7 @@ void GameScreen::Start(SDL_Helper * helper)
 	this->m_helper = helper;
 	this->m_background = new Sprite(0, 0, helper, IMG_BACKGROUND, 1, 1, SWITCH_SCREEN_WIDTH, SWITCH_SCREEN_HEIGHT, 0, 0, false, false, 1);
 
-	this->m_text = new Text(helper, "Score: " + std::to_string(this->m_score), 525, 670, 45, true, FONT_ARKANOID_2, C_BLACK);
+	this->m_text = new Text(helper, std::string(SceneManager::Instance()->GetText("scoreText")) + std::to_string(this->m_score), 525, 670, 45, true, FONT_ARKANOID_2, C_BLACK);
 	
 	int _x = 10;
 	int type = 0;
@@ -93,7 +96,7 @@ void GameScreen::Start(SDL_Helper * helper)
 	this->m_buttonTapSFX = new SfxSound(this->m_helper, SND_SFX_TAP, false, 2);
 	this->m_music = new MusicSound(this->m_helper, SND_BGM_GAME, true, 1);
 	this->m_music->Play(this->m_helper);
-
+	
 	if (this->m_settings->m_muted)
 		this->m_helper->SDL_PauseMusic();
 
@@ -153,7 +156,7 @@ void GameScreen::Update()
 		{
 			++this->m_blocksDestroyed;
 			this->m_score += block->GetScore();
-			this->m_text->SetText("Score: " + std::to_string(this->m_score));
+			this->m_text->SetText(std::string(SceneManager::Instance()->GetText("scoreText")) + std::to_string(this->m_score));
 			block->SetActive(false);
 			this->m_dx = -this->m_dx;
 			this->m_dy = -this->m_dy;
@@ -162,9 +165,7 @@ void GameScreen::Update()
 				this->m_buttonTapSFX->Play(this->m_helper);
 
 			if (this->m_blocksDestroyed >= this->m_blocks.size())
-			{
 				this->m_changeScene = true;
-			}
 
 			break;
 		}

@@ -52,7 +52,7 @@ public:
 		this->m_version = 1.0;
 		this->m_loadingDelay = 2;
 		this->m_deltaTimeReduction = 2;
-		this->m_yBlocks = 5;
+		this->m_yBlocks = 8;
 		this->m_xBlocks = 20;
 		this->m_paddleDisplacement = 10;
 
